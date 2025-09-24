@@ -113,3 +113,18 @@ body {
 ::-webkit-scrollbar-thumb:hover {
   background: rgba(255, 255, 255, 0.5);
 }
+
+/* Custom gradient utilities for the swimming pool */
+.bg-gradient-radial {
+  background: radial-gradient(circle, var(--tw-gradient-stops));
+}
+
+/* Water animation keyframes */
+@keyframes water-flow {
+  0%, 100% { transform: translateX(0) rotate(0deg); }
+  50% { transform: translateX(2px) rotate(1deg); }
+}
+
+.animate-water {
+  animation: water-flow 4s ease-in-out infinite;
+}

@@ -13,6 +13,7 @@ interface DiveResult {
 
 interface SwapInterfaceProps {
   diveResult: DiveResult | null;
+  onAmountChange: (amount: string) => void;
 }
 
 interface Token {
@@ -40,7 +41,7 @@ const TOKENS: Token[] = [
   }
 ];
 
-export function SwapInterface({ diveResult }: SwapInterfaceProps) {
+export function SwapInterface({ diveResult, onAmountChange }: SwapInterfaceProps) {
   const { address, isConnected } = useAccount();
   const [tokenIn, setTokenIn] = useState<Token>(TOKENS[0]);
   const [tokenOut, setTokenOut] = useState<Token>(TOKENS[1]);
@@ -166,7 +167,10 @@ export function SwapInterface({ diveResult }: SwapInterfaceProps) {
               type="number"
               placeholder="0.0"
               value={amountIn}
-              onChange={(e) => setAmountIn(e.target.value)}
+              onChange={(e) => {
+                setAmountIn(e.target.value);
+                onAmountChange(e.target.value);
+              }}
               className="flex-1 bg-white/20 border border-white/30 rounded-lg px-3 py-2 text-white placeholder-white/50"
             />
           </div>
@@ -227,9 +231,9 @@ export function SwapInterface({ diveResult }: SwapInterfaceProps) {
             {isPending ? 'Preparing...' : 'Confirming...'}
           </span>
         ) : !diveResult ? (
-          'Dive first to swap!'
+          '🏊‍♂️ Dive into pool first!'
         ) : (
-          `Swap with ${finalFeePercentage}% fee`
+          `💦 Execute Swap (${finalFeePercentage}% fee)`
         )}
       </button>
 

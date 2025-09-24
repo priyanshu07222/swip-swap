@@ -22,6 +22,7 @@ export function SwimmingPool() {
   const [showSplash, setShowSplash] = useState(false);
   const [diveHeight, setDiveHeight] = useState(50);
   const [leaderboardEntry, setLeaderboardEntry] = useState<any>(null);
+  const [amountIn, setAmountIn] = useState('');
   
   const poolRef = useRef<HTMLDivElement>(null);
   const dragControls = useDragControls();
@@ -109,7 +110,7 @@ export function SwimmingPool() {
       setIsDiving(false);
       setShowSplash(false);
     }, 2000);
-  }, [diveHeight, calculateDiveScore]);
+  }, [diveHeight, calculateDiveScore, address]);
 
   const handleDragOver = useCallback((event: React.DragEvent) => {
     event.preventDefault();
@@ -141,19 +142,42 @@ export function SwimmingPool() {
       {/* Leaderboard */}
       {isConnected && <Leaderboard newEntry={leaderboardEntry} />}
 
+      {/* Flow Indicator */}
+      <div className="absolute top-20 left-1/2 transform -translate-x-1/2 z-10">
+        <div className="bg-white/10 backdrop-blur-sm rounded-full px-6 py-3 border border-white/20">
+          <div className="flex items-center gap-4 text-white text-sm">
+            <div className={`flex items-center gap-2 ${amountIn ? 'text-green-300' : 'text-white/50'}`}>
+              <span className="w-6 h-6 rounded-full bg-current flex items-center justify-center text-xs">1</span>
+              Enter Amount
+            </div>
+            <div className="w-8 h-0.5 bg-white/30"></div>
+            <div className={`flex items-center gap-2 ${diveResult ? 'text-green-300' : 'text-white/50'}`}>
+              <span className="w-6 h-6 rounded-full bg-current flex items-center justify-center text-xs">2</span>
+              Dive into Pool
+            </div>
+            <div className="w-8 h-0.5 bg-white/30"></div>
+            <div className={`flex items-center gap-2 ${diveResult ? 'text-green-300' : 'text-white/50'}`}>
+              <span className="w-6 h-6 rounded-full bg-current flex items-center justify-center text-xs">3</span>
+              Execute Swap
+            </div>
+          </div>
+        </div>
+      </div>
+
       {/* Main Content */}
-      <div className="flex items-center justify-center min-h-screen p-8">
+      <div className="flex items-center justify-center min-h-screen p-8 pt-24">
         <div className="flex flex-col lg:flex-row items-center gap-12">
           
-          {/* Swimming Pool */}
+          {/* Swimming Pool Arena */}
           <div className="relative">
             <motion.div
               ref={poolRef}
-              className="w-80 h-80 bg-gradient-to-b from-cyan-300 to-blue-500 rounded-full border-8 border-blue-300 shadow-2xl relative overflow-hidden"
+              className="w-80 h-80 bg-gradient-to-b from-cyan-300 to-blue-500 rounded-full border-8 border-blue-300 shadow-2xl relative overflow-hidden cursor-pointer"
               onDrop={handleDrop}
               onDragOver={handleDragOver}
               animate={showSplash ? { scale: [1, 1.05, 1] } : {}}
               transition={{ duration: 0.5 }}
+              whileHover={{ scale: 1.02 }}
             >
               {/* Pool water effect */}
               <div className="absolute inset-0 bg-gradient-to-b from-transparent via-white/20 to-transparent animate-pulse" />
@@ -162,16 +186,34 @@ export function SwimmingPool() {
               <div className="absolute inset-4 border-4 border-white/30 rounded-full" />
               <div className="absolute inset-8 border-2 border-white/20 rounded-full" />
               
+              {/* Pool depth lines */}
+              <div className="absolute inset-12 border border-white/20 rounded-full" />
+              <div className="absolute inset-16 border border-white/15 rounded-full" />
+              
               {/* Splash effect */}
               {showSplash && <SplashEffect diveResult={diveResult} />}
               
-              {/* Drop zone indicator */}
+              {/* Arena indicator */}
               <div className="absolute inset-0 flex items-center justify-center">
-                <div className="text-white/50 text-lg font-semibold">
-                  Drop your avatar here!
+                <div className="text-center">
+                  <div className="text-white/60 text-sm font-semibold mb-2">
+                    🏊‍♂️ SWAP ARENA
+                  </div>
+                  <div className="text-white/40 text-xs">
+                    {diveResult ? 'Splash to execute swap!' : 'Drop avatar to dive!'}
+                  </div>
                 </div>
               </div>
+              
+              {/* Pool edge highlights */}
+              <div className="absolute top-2 left-1/2 transform -translate-x-1/2 w-16 h-2 bg-white/30 rounded-full" />
+              <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 w-16 h-2 bg-white/20 rounded-full" />
             </motion.div>
+            
+            {/* Pool label */}
+            <div className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 text-white/80 text-sm font-semibold">
+              💦 Dive Pool
+            </div>
           </div>
 
           {/* Controls and Info */}
@@ -183,21 +225,47 @@ export function SwimmingPool() {
               diveResult={diveResult}
             />
 
-            {/* Draggable Avatar */}
-            <motion.div
-              drag
-              dragControls={dragControls}
-              dragMomentum={false}
-              style={{ x, y, rotate, scale }}
-              className="w-16 h-16 bg-gradient-to-b from-yellow-300 to-orange-400 rounded-full border-4 border-white shadow-lg cursor-grab active:cursor-grabbing flex items-center justify-center text-2xl"
-              whileDrag={{ scale: 1.1 }}
-              whileHover={{ scale: 1.05 }}
-            >
-              🥔
-            </motion.div>
+            {/* Player Character */}
+            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20">
+              <h3 className="text-white font-bold text-lg mb-4">🎮 Player Character</h3>
+              
+              {/* Draggable Avatar */}
+              <motion.div
+                drag
+                dragControls={dragControls}
+                dragMomentum={false}
+                style={{ x, y, rotate, scale }}
+                className="w-16 h-16 bg-gradient-to-b from-yellow-300 to-orange-400 rounded-full border-4 border-white shadow-lg cursor-grab active:cursor-grabbing flex items-center justify-center text-2xl mx-auto mb-4"
+                whileDrag={{ scale: 1.1 }}
+                whileHover={{ scale: 1.05 }}
+              >
+                🥔
+              </motion.div>
+              
+              {/* Jump Button */}
+              <button
+                onClick={() => {
+                  // Simulate dropping into pool center
+                  const mockEvent = {
+                    preventDefault: () => {},
+                    clientX: window.innerWidth / 2,
+                    clientY: window.innerHeight / 2
+                  } as React.DragEvent;
+                  handleDrop(mockEvent);
+                }}
+                disabled={isDiving}
+                className="w-full bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 disabled:from-gray-500 disabled:to-gray-600 text-white font-bold py-3 px-6 rounded-lg transition-all duration-200 disabled:cursor-not-allowed"
+              >
+                {isDiving ? '💦 Diving...' : '🏊‍♂️ Jump into Pool!'}
+              </button>
+              
+              <div className="text-white/70 text-xs text-center mt-2">
+                Drag the potato or click to jump!
+              </div>
+            </div>
 
             {/* Swap Interface */}
-            <SwapInterface diveResult={diveResult} />
+            <SwapInterface diveResult={diveResult} onAmountChange={setAmountIn} />
           </div>
         </div>
       </div>

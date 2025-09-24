@@ -91,6 +91,16 @@ export function SplashEffect({ diveResult }: SplashEffectProps) {
         >
           {diveResult.tier}
         </motion.div>
+        
+        {/* Swap trigger indicator */}
+        <motion.div
+          initial={{ y: 0, opacity: 0 }}
+          animate={{ y: -100, opacity: 1 }}
+          transition={{ duration: 0.5, delay: 0.7 }}
+          className="absolute text-yellow-300 font-bold text-sm drop-shadow-lg"
+        >
+          💦 SWAP READY!
+        </motion.div>
       </motion.div>
     </AnimatePresence>
   );
